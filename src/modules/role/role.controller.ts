@@ -11,6 +11,7 @@ import { Types } from 'mongoose';
 import { RolePermissionResDto } from '@modules/role/dto/role-permission.res.dto';
 import { RoleUserAssignedResDto } from '@modules/role/dto/role-user-assigned.res.dto';
 import { AssignPermissionDto } from '@modules/role/dto/assign-permission.dto';
+import { UpdateRoleDto } from '@modules/role/dto/update-role.dto';
 
 @ApiTags('Role APIs')
 @Controller('roles')
@@ -95,7 +96,7 @@ export class RoleController {
     permissions: [{ resource: ResourceList.ROLE, actions: [ActionList.UPDATE] }],
   })
   @Put(':roleId')
-  update(@Param('roleId', ValidateMongoId) roleId: string, @Body() dto: CreateRoleDto) {
+  update(@Param('roleId', ValidateMongoId) roleId: string, @Body() dto: UpdateRoleDto) {
     return this.roleService.findByIdAndUpdate(roleId, dto);
   }
 

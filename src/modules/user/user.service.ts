@@ -27,10 +27,8 @@ export class UserService {
 
   async create(dto: CreateUserDto) {
     const { email, password, displayName, roleId } = dto;
-    const emailExist = await this.findOneByCondition({ email });
-    if (emailExist) {
-      throw new ConflictException(ERROR_CODE.EMAIL_EXIST);
-    }
+
+    Optional.of(await this.findOneByCondition({ email })).throwIfExist(new ConflictException(ERROR_CODE.EMAIL_EXIST));
     Optional.of(await this.roleService.findOneById(roleId)).throwIfNullable(
       new BadRequestException(ERROR_CODE.ROLE_NOT_FOUND),
     );
@@ -50,12 +48,6 @@ export class UserService {
     );
 
     return plainToInstance(UserResDto, users);
-  }
-
-  async findAllUserWithShopAssigned() {
-    const users = await this.userRepository.findAllUserWithShopAssigned();
-
-    return users;
   }
 
   async findOneUserById(id: string): Promise<UserResDto> {

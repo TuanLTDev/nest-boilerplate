@@ -1,4 +1,5 @@
 import * as process from 'process';
+import { ROLE } from '@core/constants/app.constant';
 
 export const getEnvFilePath = (): string => {
   const ENV = process.env.NODE_ENV;
@@ -35,4 +36,8 @@ export const renameKeys = (obj: object, keyMapping: { [key: string]: string }) =
         return acc;
       }, {})
     : null;
+};
+
+export const isCoreRoleSystem = (role: string) => {
+  return Object.values(ROLE).includes(role as unknown as ROLE);
 };

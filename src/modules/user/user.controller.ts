@@ -42,16 +42,6 @@ export class UserController {
   }
 
   @ApiAuth({
-    summary: 'Get all user with shop assigned',
-    isArray: true,
-    permissions: [{ resource: ResourceList.USER, actions: [ActionList.READ_ALL] }],
-  })
-  @Get('shops-assign')
-  findAllUserWithShopAssigned() {
-    return this.userService.findAllUserWithShopAssigned();
-  }
-
-  @ApiAuth({
     summary: 'Get my information',
     type: UserResDto,
     permissions: [{ resource: ResourceList.USER, actions: [ActionList.READ] }],

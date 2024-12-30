@@ -82,7 +82,7 @@ export class AuthController {
     statusCode: HttpStatus.NO_CONTENT,
   })
   @Get('verify-token-reset-password')
-  async verifyResetPassword(@Query() dto: TokenDto) {
+  verifyResetPassword(@Query() dto: TokenDto) {
     return this.authService.verifyTokenResetPassword(dto);
   }
 
@@ -91,7 +91,7 @@ export class AuthController {
     statusCode: HttpStatus.NO_CONTENT,
   })
   @Post('reset-password')
-  async resetPassword(@Body() dto: ResetPasswordDto) {
+  resetPassword(@Body() dto: ResetPasswordDto) {
     return this.authService.resetPassword(dto);
   }
 }

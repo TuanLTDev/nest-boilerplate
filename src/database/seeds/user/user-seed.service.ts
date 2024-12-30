@@ -43,10 +43,12 @@ export class UserSeedService {
   }
 
   async run() {
-    const count = await this.userModel.countDocuments();
-    const adminRole: Role = await this.roleModel.findOne({ name: ROLE.ADMIN }).lean().exec();
-    const moderatorRole: Role = await this.roleModel.findOne({ name: ROLE.MODERATOR }).lean().exec();
-    const basicRole: Role = await this.roleModel.findOne({ name: ROLE.USER }).lean().exec();
+    const [count, adminRole, moderatorRole, basicRole] = await Promise.all([
+      this.userModel.countDocuments(),
+      this.roleModel.findOne({ name: ROLE.ADMIN }).lean().exec(),
+      this.roleModel.findOne({ name: ROLE.MODERATOR }).lean().exec(),
+      this.roleModel.findOne({ name: ROLE.USER }).lean().exec(),
+    ]);
 
     if (count === 0) {
       const DEFAULT_PASSWORD = await hashPassword(`lutech@${new Date().getFullYear()}`);
@@ -82,11 +84,7 @@ export class UserSeedService {
       ];
 
       const listMailAlready = usersSeedData.map((item) => item.email);
-      const response: any = await this.axiosClientService.get('office/employee', {
-        params: {
-          department: 'Accounter',
-        },
-      });
+      const response: any = await this.axiosClientService.get('office/employee');
       const usersResponseData: Array<Partial<UserApiResponse>> = [];
       if (response && response.success) {
         usersResponseData.push(...response.data);

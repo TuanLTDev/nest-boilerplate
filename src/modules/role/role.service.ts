@@ -1,4 +1,11 @@
-import { BadRequestException, ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { RoleRepositoryInterface } from '@modules/role/interfaces/role.repository.interface';
 import { CreateRoleDto } from '@modules/role/dto/create-role.dto';
 import { plainToInstance } from 'class-transformer';
@@ -10,6 +17,8 @@ import { RolePermissionResDto } from '@modules/role/dto/role-permission.res.dto'
 import { RoleUserAssignedResDto } from '@modules/role/dto/role-user-assigned.res.dto';
 import { PermissionService } from '@modules/permission/permission.service';
 import { Optional } from '@core/utils/optional';
+import { isCoreRoleSystem } from '@core/helper';
+import { UpdateRoleDto } from '@modules/role/dto/update-role.dto';
 
 @Injectable()
 export class RoleService {
@@ -62,14 +71,24 @@ export class RoleService {
     return plainToInstance(RoleUserAssignedResDto, role, { excludeExtraneousValues: true });
   }
 
-  async findByIdAndUpdate(id: string, dto: CreateRoleDto) {
-    const regexName = new RegExp(`${dto.name}`, 'i');
-    Optional.of(
-      await this.roleRepository.findOneByCondition({
-        name: { $regex: regexName },
-        _id: { $ne: id },
-      }),
-    ).throwIfExist(new ConflictException(ERROR_CODE.ROLE_NAME_EXIST));
+  async findByIdAndUpdate(id: string, dto: UpdateRoleDto) {
+    const role = Optional.of(await this.findOneById(id))
+      .throwIfNullable(new NotFoundException(ERROR_CODE.ROLE_NOT_FOUND))
+      .get() as Role;
+
+    if (dto.name) {
+      if (isCoreRoleSystem(role.name)) {
+        throw new ForbiddenException(ERROR_CODE.ACCESS_DENIED);
+      }
+
+      const regexName = new RegExp(`${dto.name}`, 'i');
+      Optional.of(
+        await this.roleRepository.findOneByCondition({
+          name: { $regex: regexName },
+          _id: { $ne: id },
+        }),
+      ).throwIfExist(new ConflictException(ERROR_CODE.ROLE_NAME_EXIST));
+    }
 
     if (dto.permissions && dto.permissions.length > 0) {
       const isValid = await this.permissionService.validateMultiplePermissions(dto.permissions);
@@ -129,6 +148,14 @@ export class RoleService {
   }
 
   async remove(id: string) {
+    const role = Optional.of(await this.findOneById(id))
+      .throwIfNullable(new NotFoundException(ERROR_CODE.ROLE_NOT_FOUND))
+      .get() as Role;
+
+    if (isCoreRoleSystem(role.name)) {
+      throw new ForbiddenException(ERROR_CODE.ACCESS_DENIED);
+    }
+
     return this.roleRepository.permanentlyDelete(id);
   }
 }
