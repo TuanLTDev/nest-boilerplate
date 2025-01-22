@@ -13,7 +13,7 @@ import { ErrorDto } from '@common/dto/error.dto';
 import { Public } from '@core/decorators/public.decorator';
 import { ApiPaginatedResponse } from '@core/decorators/swagger.decorators';
 import { Roles } from '@core/decorators/role.decorator';
-import { PermissionPayload } from '@config/permission.config';
+import { PermissionPayload } from '@core/constants/permission.constant';
 import { PermissionHandler } from '@core/utils/permission-handler';
 import { CheckPermissions } from '@core/decorators/permission.decorator';
 import { ActionList, ResourceList, ROLE } from '@core/constants/app.constant';

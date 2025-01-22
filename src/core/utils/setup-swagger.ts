@@ -6,7 +6,7 @@ export function setupSwagger(app: INestApplication): void {
   const configService = app.get<ConfigService>(ConfigService);
   const appName = configService.getOrThrow('app.name', { infer: true });
   const appUrl = configService.getOrThrow('app.url', { infer: true });
-  const company: any = configService.getOrThrow('company', { infer: true });
+  const company: any = configService.getOrThrow('swagger', { infer: true });
 
   const documentBuilder = new DocumentBuilder()
     .setTitle(appName)

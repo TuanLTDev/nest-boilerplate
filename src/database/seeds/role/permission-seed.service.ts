@@ -4,7 +4,7 @@ import { Role, RoleDocument } from '@modules/role/entities/role.schema';
 import { Model } from 'mongoose';
 import { Permission, PermissionDocument } from '@modules/permission/entities/permission.schema';
 import { createPermissions, prepareConditionFindPermissions } from '@modules/permission/helpers';
-import { PermissionConfiguration } from '@config/permission.config';
+import { PermissionConfiguration } from '@core/constants/permission.constant';
 
 @Injectable()
 export class PermissionSeedService {

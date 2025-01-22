@@ -1,4 +1,4 @@
-import { PermissionPayload } from '@config/permission.config';
+import { PermissionPayload } from '@core/constants/permission.constant';
 import { Permission } from '@modules/permission/entities/permission.schema';
 import { ActionList } from '@core/constants/app.constant';
 

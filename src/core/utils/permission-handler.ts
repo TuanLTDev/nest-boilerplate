@@ -1,5 +1,5 @@
 import { PermissionHandlerInterface } from '@core/interfaces/permission-handler.interface';
-import { PermissionPayload } from '@config/permission.config';
+import { PermissionPayload } from '@core/constants/permission.constant';
 import { ICurrentUser } from '@modules/auth/interfaces';
 
 export class PermissionHandler implements PermissionHandlerInterface {

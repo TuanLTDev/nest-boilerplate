@@ -34,13 +34,12 @@ async function bootstrap() {
   });
 
   app.use(compression());
-  app.enableCors();
-  // app.enableCors({
-  //   origin: corsOrigin,
-  //   methods: 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
-  //   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept', 'Cookie'],
-  //   credentials: true,
-  // });
+  app.enableCors({
+    origin: corsOrigin,
+    methods: 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept', 'Cookie'],
+    credentials: true,
+  });
   console.info('CORS Origin:', corsOrigin);
   const reflector = app.get(Reflector);
 
