@@ -1,4 +1,4 @@
-import { Environment } from '@core/constants/app.constant';
+import { Environment, LogService } from '@core/constants/app.constant';
 import validateConfig from '@core/utils/validate-config';
 import { registerAs } from '@nestjs/config';
 import { IsBoolean, IsEnum, IsInt, IsOptional, IsString, IsUrl, Matches, Max, Min } from 'class-validator';
@@ -43,6 +43,15 @@ class EnvironmentVariablesValidator {
   API_PREFIX: string;
 
   @IsString()
+  @IsOptional()
+  APP_LOG_LEVEL: string;
+
+  @IsString()
+  @IsEnum(LogService)
+  @IsOptional()
+  APP_LOG_SERVICE: string;
+
+  @IsString()
   @Matches(/^(true|false|\*|([\w]+:\/\/)?([\w.-]+)(:[0-9]+)?)?(,([\w]+:\/\/)?([\w.-]+)(:[0-9]+)?)*$/)
   @IsOptional()
   APP_CORS_ORIGIN: string;
@@ -74,6 +83,8 @@ export default registerAs<AppConfig>('app', () => {
     port,
     debug: process.env.APP_DEBUG === 'true',
     apiPrefix: process.env.API_PREFIX || 'api',
+    logLevel: process.env.APP_LOG_LEVEL || 'warn',
+    logService: process.env.APP_LOG_SERVICE || LogService.CONSOLE,
     corsOrigin: getCorsOrigin(),
     admobUrl: process.env.ADMOB_URL,
     admobAccessToken: process.env.ADMOB_ACCESS_TOKEN,

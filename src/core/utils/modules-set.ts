@@ -12,6 +12,8 @@ import { redisStore } from 'cache-manager-ioredis-yet';
 import { ScheduleModule } from '@nestjs/schedule';
 import { NestjsFingerprintModule } from 'nestjs-fingerprint';
 import swaggerConfig from '@config/swagger.config';
+import { LoggerModule } from 'nestjs-pino';
+import loggerFactory from '@core/utils/logger-factory';
 
 const getMongodbUri = (configService: ConfigService): MongooseModuleOptions => {
   const { scheme, host, username, password, port, databaseName, options } = configService.get('database');
@@ -47,6 +49,12 @@ function generateModulesSet() {
     inject: [ConfigService],
   });
 
+  const loggerModule = LoggerModule.forRootAsync({
+    imports: [ConfigModule],
+    useFactory: loggerFactory,
+    inject: [ConfigService],
+  });
+
   const cacheModule = CacheModule.registerAsync({
     imports: [ConfigModule],
     useFactory: async (configService: ConfigService) => {
@@ -75,7 +83,7 @@ function generateModulesSet() {
     },
   });
 
-  customModules = [databaseModule, cacheModule, scheduleModule, fingerprintModule];
+  customModules = [databaseModule, loggerModule, cacheModule, scheduleModule, fingerprintModule];
 
   return imports.concat(customModules);
 }

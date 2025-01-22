@@ -7,6 +7,8 @@ export type AppConfig = {
   debug: boolean;
   apiPrefix: string;
   corsOrigin: boolean | string | RegExp | (string | RegExp)[];
+  logLevel: string;
+  logService: string;
   admobUrl: string;
   admobAccessToken: string;
 };
