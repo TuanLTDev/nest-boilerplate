@@ -17,6 +17,7 @@ import { AuthService } from '@modules/auth/auth.service';
 import * as compression from 'compression';
 import { Logger } from 'nestjs-pino';
 import helmet from 'helmet';
+import { AllConfigType } from '@config/config.type';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -27,7 +28,7 @@ async function bootstrap() {
   app.use(helmet());
   app.use(compression());
 
-  const configService = app.get<ConfigService>(ConfigService);
+  const configService = app.get<ConfigService>(ConfigService<AllConfigType>);
   const port = configService.get<number>('app.port', { infer: true });
 
   const corsOrigin = configService.getOrThrow<string>('app.corsOrigin', {

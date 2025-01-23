@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { UserSeedModule } from '@database/seeds/user/user-seed.module';
 import { ConfigModule } from '@nestjs/config';
 import { getEnvFilePath } from '@core/helper';
-import configuration from '@config/swagger.config';
 import { RoleSeedModule } from '@database/seeds/role/role-seed.module';
 import { DatabaseConfigModule } from '@core/utils/modules-set';
+import databaseConfig from '@database/config/database.config';
+import appConfig from '@config/app.config';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { DatabaseConfigModule } from '@core/utils/modules-set';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [getEnvFilePath()],
-      load: [configuration],
+      load: [databaseConfig, appConfig],
     }),
     DatabaseConfigModule,
   ],

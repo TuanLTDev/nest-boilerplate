@@ -14,9 +14,10 @@ import { NestjsFingerprintModule } from 'nestjs-fingerprint';
 import swaggerConfig from '@config/swagger.config';
 import { LoggerModule } from 'nestjs-pino';
 import loggerFactory from '@core/utils/logger-factory';
+import { AllConfigType } from '@config/config.type';
 
-const getMongodbUri = (configService: ConfigService): MongooseModuleOptions => {
-  const { scheme, host, username, password, port, databaseName, options } = configService.get('database');
+const getMongodbUri = (configService: ConfigService<AllConfigType>): MongooseModuleOptions => {
+  const { scheme, host, username, password, port, databaseName, options } = configService.getOrThrow('database');
   const auth = username && password ? `${username}:${password}@` : '';
   const portPart = scheme !== 'mongodb+srv' && port ? `:${port}` : '';
   const optionsPart = options ? options : '';
@@ -43,11 +44,7 @@ function generateModulesSet() {
   ];
 
   let customModules: ModuleMetadata['imports'] = [];
-  const databaseModule = MongooseModule.forRootAsync({
-    imports: [ConfigModule],
-    useFactory: getMongodbUri,
-    inject: [ConfigService],
-  });
+  const databaseModule = DatabaseConfigModule;
 
   const loggerModule = LoggerModule.forRootAsync({
     imports: [ConfigModule],
